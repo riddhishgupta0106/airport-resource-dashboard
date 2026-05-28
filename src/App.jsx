@@ -7,59 +7,56 @@ export default function App() {
   // STATES
   // =========================
 
-  const [results, setResults] =
-    useState([]);
+  const [results, setResults] = useState([]);
+  const [duplicates, setDuplicates] = useState([]);
+  const [chargeErrors, setChargeErrors] = useState([]);
+  const [abnormalEntries, setAbnormalEntries] = useState([]);
+  const [delEntries, setDelEntries] = useState([]);
 
-  const [duplicates, setDuplicates] =
-    useState([]);
+  const [gpuRate, setGpuRate] = useState('');
+  const [pcaRate, setPcaRate] = useState('');
 
-  const [chargeErrors, setChargeErrors] =
-    useState([]);
+  const [abnormalHours, setAbnormalHours] = useState('');
+  const [abnormalMinutes, setAbnormalMinutes] = useState('');
 
-  const [abnormalEntries, setAbnormalEntries] =
-    useState([]);
-
-  const [delEntries, setDelEntries] =
-    useState([]);
-
-  const [gpuRate, setGpuRate] =
-    useState('');
-
-  const [pcaRate, setPcaRate] =
-    useState('');
-
-  const [abnormalHours, setAbnormalHours] =
-    useState('');
-
-  const [abnormalMinutes, setAbnormalMinutes] =
-    useState('');
+  const [selectedAirline, setSelectedAirline] =
+    useState('Indigo');
 
   // =========================
   // ROUNDING LOGIC
   // =========================
 
-  const calculateBilling = (value) => {
+  const calculateBilling = (
+    value,
+    airline
+  ) => {
 
-    if (value < 30) {
-      return 30;
+    const minimumBilling =
+      airline === 'Indigo'
+        ? 30
+        : 20;
+
+    if (value < minimumBilling) {
+      return minimumBilling;
     }
 
     if (value % 10 === 0) {
       return value;
     }
 
-    return Math.ceil(value / 10) * 10;
+    return (
+      Math.ceil(value / 10) * 10
+    );
 
   };
 
   // =========================
-  // CUSTOM CHARGE ROUNDING
+  // CHARGE ROUNDING
   // =========================
 
   const roundCharge = (value) => {
 
-    const decimalPart =
-      value % 1;
+    const decimalPart = value % 1;
 
     if (decimalPart < 0.5) {
       return Math.floor(value);
@@ -116,113 +113,83 @@ export default function App() {
       let billedIndex = 12;
 
       let endDateIndex = 2;
-
       let originIndex = 3;
-
       let destinationIndex = 4;
-
       let flightIndex = 5;
-
       let regnIndex = 7;
-
       let bayIndex = 8;
-
       let startTimeIndex = 9;
-
       let endTimeIndex = 10;
-
       let chargesIndex = 13;
 
-      // Auto detect columns
+      // =========================
+      // AUTO DETECT
+      // =========================
 
-      for (
-        let i = 0;
-        i < 30;
-        i++
-      ) {
+      for (let i = 0; i < 30; i++) {
 
         const row = rows[i];
 
         if (!row) continue;
 
-        row.forEach(
-          (cell, idx) => {
+        row.forEach((cell, idx) => {
 
-            const text =
-              String(cell)
-                .toLowerCase()
-                .trim();
+          const text =
+            String(cell)
+              .toLowerCase()
+              .trim();
 
-            if (
-              text.includes('actual')
-            ) {
-              actualIndex = idx;
-            }
-
-            if (
-              text.includes('billed') ||
-              text.includes('billing')
-            ) {
-              billedIndex = idx;
-            }
-
-            if (
-              text.includes('flight')
-            ) {
-              flightIndex = idx;
-            }
-
-            if (
-              text.includes('regn')
-            ) {
-              regnIndex = idx;
-            }
-
-            if (
-              text.includes('bay')
-            ) {
-              bayIndex = idx;
-            }
-
-            if (
-              text.includes('origin')
-            ) {
-              originIndex = idx;
-            }
-
-            if (
-              text.includes('destination') ||
-              text.includes('dest')
-            ) {
-              destinationIndex = idx;
-            }
-
-            if (
-              text.includes('end date')
-            ) {
-              endDateIndex = idx;
-            }
-
-            if (
-              text.includes('start time')
-            ) {
-              startTimeIndex = idx;
-            }
-
-            if (
-              text.includes('end time')
-            ) {
-              endTimeIndex = idx;
-            }
-
-            if (
-              text.includes('charge')
-            ) {
-              chargesIndex = idx;
-            }
-
+          if (text.includes('actual')) {
+            actualIndex = idx;
           }
-        );
+
+          if (
+            text.includes('billed') ||
+            text.includes('billing')
+          ) {
+            billedIndex = idx;
+          }
+
+          if (text.includes('flight')) {
+            flightIndex = idx;
+          }
+
+          if (text.includes('regn')) {
+            regnIndex = idx;
+          }
+
+          if (text.includes('bay')) {
+            bayIndex = idx;
+          }
+
+          if (text.includes('origin')) {
+            originIndex = idx;
+          }
+
+          if (
+            text.includes('destination') ||
+            text.includes('dest')
+          ) {
+            destinationIndex = idx;
+          }
+
+          if (text.includes('end date')) {
+            endDateIndex = idx;
+          }
+
+          if (text.includes('start time')) {
+            startTimeIndex = idx;
+          }
+
+          if (text.includes('end time')) {
+            endTimeIndex = idx;
+          }
+
+          if (text.includes('charge')) {
+            chargesIndex = idx;
+          }
+
+        });
 
       }
 
@@ -231,27 +198,20 @@ export default function App() {
       // =========================
 
       let mismatches = [];
-
       let duplicateFlights = [];
-
-      let chargeErrors = [];
-
+      let chargeMismatchRows = [];
       let abnormalUsageRows = [];
-
       let delRows = [];
 
       // =========================
       // MAPS
       // =========================
 
-      const gpuFlightSet =
-        new Map();
-
-      const pcaFlightSet =
-        new Map();
+      const gpuFlightSet = new Map();
+      const pcaFlightSet = new Map();
 
       // =========================
-      // TRACK SECTION
+      // SECTION TRACKER
       // =========================
 
       let currentSection = '';
@@ -260,313 +220,256 @@ export default function App() {
       // PROCESS ROWS
       // =========================
 
-      rows.forEach(
-        (row, index) => {
+      rows.forEach((row, index) => {
+
+        if (!row || row.length === 0) {
+          return;
+        }
+
+        const rowText =
+          row.join(' ')
+            .toLowerCase();
+
+        // SECTION DETECTION
+
+        if (rowText.includes('gpu')) {
+
+          currentSection = 'GPU';
+          return;
+
+        }
+
+        if (rowText.includes('pca')) {
+
+          currentSection = 'PCA';
+          return;
+
+        }
+
+        // SKIP TOTALS
+
+        if (rowText.includes('total')) {
+          return;
+        }
+
+        const actualValue =
+          row[actualIndex];
+
+        const billedValue =
+          row[billedIndex];
+
+        // SKIP BLANKS
+
+        if (
+          actualValue === '' &&
+          billedValue === ''
+        ) {
+          return;
+        }
+
+        // SKIP HEADERS
+
+        if (
+          String(actualValue)
+            .toLowerCase()
+            .includes('actual') ||
+
+          String(billedValue)
+            .toLowerCase()
+            .includes('billed')
+        ) {
+          return;
+        }
+
+        const actual =
+          Number(actualValue);
+
+        const billed =
+          Number(billedValue);
+
+        if (
+          isNaN(actual) ||
+          isNaN(billed)
+        ) {
+          return;
+        }
+
+        // =========================
+        // ROUND OFF CHECK
+        // =========================
+
+        const expected =
+          calculateBilling(
+            actual,
+            selectedAirline
+          );
+
+        if (expected !== billed) {
+
+          mismatches.push({
+            row: index + 1,
+            type: currentSection,
+            actual,
+            billed,
+            expected,
+          });
+
+        }
+
+        // =========================
+        // DEL CHECK
+        // =========================
+
+        const origin =
+          String(
+            row[originIndex] || ''
+          )
+            .trim()
+            .toUpperCase();
+
+        const destination =
+          String(
+            row[destinationIndex] || ''
+          )
+            .trim()
+            .toUpperCase();
+
+        if (
+          origin === 'DEL' ||
+          destination === 'DEL'
+        ) {
+
+          delRows.push({
+            row: index + 1,
+            type: currentSection,
+            origin,
+            destination,
+            flight: row[flightIndex],
+            bay: row[bayIndex],
+          });
+
+        }
+
+        // =========================
+        // ABNORMAL USAGE
+        // =========================
+
+        const abnormalLimitMinutes =
+          (
+            Number(abnormalHours || 0) * 60
+          ) +
+          Number(abnormalMinutes || 0);
+
+        if (
+          actual >
+          abnormalLimitMinutes
+        ) {
+
+          abnormalUsageRows.push({
+            row: index + 1,
+            type: currentSection,
+            actual,
+          });
+
+        }
+
+        // =========================
+        // CHARGES CHECK
+        // =========================
+
+        const excelCharge =
+          Number(
+            row[chargesIndex]
+          );
+
+        if (!isNaN(excelCharge)) {
+
+          let hourlyRate = 0;
 
           if (
-            !row ||
-            row.length === 0
-          ) {
-            return;
-          }
-
-          const rowText =
-            row.join(' ')
-              .toLowerCase();
-
-          // GPU Section
-
-          if (
-            rowText.includes('gpu')
+            currentSection === 'GPU'
           ) {
 
-            currentSection =
-              'GPU';
+            hourlyRate =
+              Number(gpuRate);
 
-            return;
-
-          }
-
-          // PCA Section
-
-          if (
-            rowText.includes('pca')
+          } else if (
+            currentSection === 'PCA'
           ) {
 
-            currentSection =
-              'PCA';
-
-            return;
-
-          }
-
-          // Skip totals
-
-          if (
-            rowText.includes('total')
-          ) {
-            return;
-          }
-
-          // =========================
-          // ROUND OFF CHECK
-          // =========================
-
-          const actualValue =
-            row[actualIndex];
-
-          const billedValue =
-            row[billedIndex];
-
-          // Skip blanks
-
-          if (
-            actualValue === '' &&
-            billedValue === ''
-          ) {
-            return;
-          }
-
-          // Skip headers
-
-          if (
-            String(actualValue)
-              .toLowerCase()
-              .includes('actual') ||
-
-            String(billedValue)
-              .toLowerCase()
-              .includes('billed')
-          ) {
-            return;
-          }
-
-          const actual =
-            Number(actualValue);
-
-          const billed =
-            Number(billedValue);
-
-          // Skip invalid rows
-
-          if (
-            isNaN(actual) ||
-            isNaN(billed)
-          ) {
-            return;
-          }
-
-          const expected =
-            calculateBilling(
-              actual
-            );
-
-          // Compare
-
-          if (
-            expected !== billed
-          ) {
-
-            mismatches.push({
-              row:
-                index + 1,
-              type:
-                currentSection,
-              actual,
-              billed,
-              expected,
-            });
-
-          }
-
-          // =========================
-          // DEL CHECK
-          // =========================
-
-          const origin =
-            String(
-              row[originIndex] || ''
-            )
-              .trim()
-              .toUpperCase();
-
-          const destination =
-            String(
-              row[destinationIndex] || ''
-            )
-              .trim()
-              .toUpperCase();
-
-          const flightNumberDisplay =
-            row[flightIndex];
-
-          const bayDisplay =
-            row[bayIndex];
-
-          if (
-            origin === 'DEL' ||
-            destination === 'DEL'
-          ) {
-
-            delRows.push({
-              row:
-                index + 1,
-              type:
-                currentSection,
-              origin,
-              destination,
-              flight:
-                flightNumberDisplay,
-              bay:
-                bayDisplay,
-            });
-
-          }
-
-          // =========================
-          // ABNORMAL USAGE CHECK
-          // =========================
-
-          const abnormalLimitMinutes =
-            (
-              Number(
-                abnormalHours || 0
-              ) * 60
-            ) +
-            Number(
-              abnormalMinutes || 0
-            );
-
-          if (
-            actual >
-            abnormalLimitMinutes
-          ) {
-
-            abnormalUsageRows.push({
-              row:
-                index + 1,
-              type:
-                currentSection,
-              actual,
-            });
+            hourlyRate =
+              Number(pcaRate);
 
           }
 
-          // =========================
-          // CHARGES CHECK
-          // =========================
+          if (hourlyRate > 0) {
 
-          const billedMinutes =
-            billed;
+            const perMinuteRate =
+              hourlyRate / 60;
 
-          const excelCharge =
-            Number(
-              row[chargesIndex]
-            );
+            const rawCharge =
+              billed *
+              perMinuteRate;
 
-          if (
-            !isNaN(excelCharge)
-          ) {
-
-            let hourlyRate = 0;
+            const calculatedCharge =
+              roundCharge(
+                rawCharge
+              );
 
             if (
-              currentSection === 'GPU'
+              calculatedCharge !==
+              excelCharge
             ) {
 
-              hourlyRate =
-                Number(gpuRate);
-
-            } else if (
-              currentSection === 'PCA'
-            ) {
-
-              hourlyRate =
-                Number(pcaRate);
-
-            }
-
-            if (
-              hourlyRate > 0
-            ) {
-
-              // Per minute rate
-
-              const perMinuteRate =
-                hourlyRate / 60;
-
-              // Raw charge
-
-              const rawCharge =
-                billedMinutes *
-                perMinuteRate;
-
-              // Rounded charge
-
-              const calculatedCharge =
-                roundCharge(
-                  rawCharge
-                );
-
-              // Compare
-
-              if (
-                calculatedCharge !==
-                excelCharge
-              ) {
-
-                chargeErrors.push({
-                  row:
-                    index + 1,
-                  type:
-                    currentSection,
-                  excel:
-                    excelCharge,
-                  calculated:
-                    calculatedCharge,
-                });
-
-              }
+              chargeMismatchRows.push({
+                row: index + 1,
+                type: currentSection,
+                excel: excelCharge,
+                calculated:
+                  calculatedCharge,
+              });
 
             }
 
           }
 
-          // =========================
-          // DUPLICATE CHECK
-          // =========================
+        }
 
-          const rowType =
-            currentSection;
+        // =========================
+        // DUPLICATE CHECK
+        // =========================
 
-          if (!rowType) {
-            return;
-          }
+        const rowType =
+          currentSection;
 
-          const currentSet =
-            rowType === 'GPU'
-              ? gpuFlightSet
-              : pcaFlightSet;
+        if (!rowType) {
+          return;
+        }
 
-          const endDate =
-            row[endDateIndex];
+        const currentSet =
+          rowType === 'GPU'
+            ? gpuFlightSet
+            : pcaFlightSet;
 
-          const flightNumber =
-            row[flightIndex];
+        const endDate =
+          row[endDateIndex];
 
-          const regn =
-            row[regnIndex];
+        const flightNumber =
+          row[flightIndex];
 
-          const bayNumber =
-            row[bayIndex];
+        const regn =
+          row[regnIndex];
 
-          const startTime =
-            row[startTimeIndex];
+        const bayNumber =
+          row[bayIndex];
 
-          const endTime =
-            row[endTimeIndex];
+        const startTime =
+          row[startTimeIndex];
 
-          const uniqueKey = `
+        const endTime =
+          row[endTimeIndex];
+
+        const uniqueKey = `
 ${endDate}|
 ${flightNumber}|
 ${regn}|
@@ -575,48 +478,44 @@ ${startTime}|
 ${endTime}
 `;
 
+        if (
+          endDate &&
+          flightNumber &&
+          regn &&
+          bayNumber &&
+          startTime &&
+          endTime
+        ) {
+
           if (
-            endDate &&
-            flightNumber &&
-            regn &&
-            bayNumber &&
-            startTime &&
-            endTime
+            currentSet.has(uniqueKey)
           ) {
 
-            if (
-              currentSet.has(uniqueKey)
-            ) {
+            const existingData =
+              currentSet.get(uniqueKey);
 
-              const existingData =
-                currentSet.get(uniqueKey);
+            existingData.rows.push(
+              index + 1
+            );
 
-              existingData.rows.push(
-                index + 1
-              );
+          } else {
 
-            } else {
-
-              currentSet.set(
-                uniqueKey,
-                {
-                  rows: [
-                    index + 1
-                  ],
-                  type:
-                    rowType,
-                  flightNumber,
-                  regn,
-                  bayNumber,
-                }
-              );
-
-            }
+            currentSet.set(
+              uniqueKey,
+              {
+                rows: [index + 1],
+                type: rowType,
+                flightNumber,
+                regn,
+                bayNumber,
+              }
+            );
 
           }
 
         }
-      );
+
+      });
 
       // =========================
       // EXTRACT DUPLICATES
@@ -649,28 +548,24 @@ ${endTime}
       });
 
       // =========================
-      // SAVE RESULTS
+      // SAVE
       // =========================
 
-      setResults(
-        mismatches
-      );
+      setResults(mismatches);
 
       setDuplicates(
         duplicateFlights
       );
 
       setChargeErrors(
-        chargeErrors
+        chargeMismatchRows
       );
 
       setAbnormalEntries(
         abnormalUsageRows
       );
 
-      setDelEntries(
-        delRows
-      );
+      setDelEntries(delRows);
 
     };
 
@@ -688,39 +583,87 @@ ${endTime}
       style={{
         padding: '40px',
         fontFamily: 'Arial',
-        backgroundColor:
-          '#000000',
+        backgroundColor: '#000000',
         minHeight: '100vh',
         color: 'white',
       }}
     >
 
-      {/* MAIN HEADING */}
-
       <h1
         style={{
           textAlign: 'center',
-          marginBottom: '40px',
+          marginBottom: '20px',
           fontSize: '42px',
-          color: 'white',
         }}
       >
         BME Excel Checker
       </h1>
 
-      {/* RATE INPUTS */}
+      <p
+        style={{
+          textAlign: 'center',
+          color: 'lightgray',
+          marginBottom: '30px',
+        }}
+      >
+        Files are processed locally in browser.
+        No Excel data is uploaded or stored.
+      </p>
+
+      {/* AIRLINE */}
+
+      <div
+        style={{
+          marginBottom: '30px',
+          textAlign: 'center',
+        }}
+      >
+
+        <label
+          style={{
+            marginRight: '10px',
+            fontWeight: 'bold',
+          }}
+        >
+          Airline
+        </label>
+
+        <select
+          value={selectedAirline}
+          onChange={(e) =>
+            setSelectedAirline(
+              e.target.value
+            )
+          }
+          style={{
+            padding: '8px',
+            fontSize: '16px',
+          }}
+        >
+
+          <option value="Indigo">
+            Indigo
+          </option>
+
+          <option value="Other">
+            Other
+          </option>
+
+        </select>
+
+      </div>
+
+      {/* RATES */}
 
       <div
         style={{
           display: 'flex',
           gap: '40px',
           marginBottom: '30px',
-          flexWrap: 'wrap',
           justifyContent: 'center',
+          flexWrap: 'wrap',
         }}
       >
-
-        {/* GPU RATE */}
 
         <div
           style={{
@@ -745,8 +688,6 @@ ${endTime}
           />
 
         </div>
-
-        {/* PCA RATE */}
 
         <div
           style={{
@@ -774,7 +715,7 @@ ${endTime}
 
       </div>
 
-      {/* MINIMUM ABNORMAL USAGE */}
+      {/* ABNORMAL */}
 
       <div
         style={{
@@ -784,8 +725,6 @@ ${endTime}
 
         <h3
           style={{
-            color: 'white',
-            marginBottom: '15px',
             textAlign: 'center',
           }}
         >
@@ -800,45 +739,37 @@ ${endTime}
           }}
         >
 
-          <div>
+          <input
+            type="number"
+            placeholder="Hours"
+            value={abnormalHours}
+            onChange={(e) =>
+              setAbnormalHours(
+                e.target.value
+              )
+            }
+          />
 
-            <input
-              type="number"
-              placeholder="Hours"
-              value={abnormalHours}
-              onChange={(e) =>
-                setAbnormalHours(
-                  e.target.value
-                )
-              }
-            />
-
-          </div>
-
-          <div>
-
-            <input
-              type="number"
-              placeholder="Minutes"
-              value={abnormalMinutes}
-              onChange={(e) =>
-                setAbnormalMinutes(
-                  e.target.value
-                )
-              }
-            />
-
-          </div>
+          <input
+            type="number"
+            placeholder="Minutes"
+            value={abnormalMinutes}
+            onChange={(e) =>
+              setAbnormalMinutes(
+                e.target.value
+              )
+            }
+          />
 
         </div>
 
       </div>
 
-      {/* FILE UPLOAD */}
+      {/* FILE */}
 
       <div
         style={{
-          marginBottom: '30px',
+          marginBottom: '40px',
           textAlign: 'center',
         }}
       >
@@ -847,9 +778,6 @@ ${endTime}
           type="file"
           accept=".xlsx,.xls"
           onChange={handleUpload}
-          style={{
-            color: 'white',
-          }}
         />
 
       </div>
@@ -858,9 +786,8 @@ ${endTime}
 
       <h2
         style={{
-          marginBottom: '15px',
-          color: 'white',
           textAlign: 'center',
+          marginBottom: '20px',
         }}
       >
         Round Off Checker
@@ -871,17 +798,15 @@ ${endTime}
         cellPadding="10"
         style={{
           width: '100%',
-          backgroundColor: '#111111',
-          borderCollapse: 'collapse',
           marginBottom: '50px',
+          borderCollapse: 'collapse',
           color: 'white',
         }}
       >
 
         <thead
           style={{
-            backgroundColor: '#2563eb',
-            color: 'white',
+            backgroundColor: '#1e40af',
           }}
         >
 
@@ -899,9 +824,9 @@ ${endTime}
 
           {results.length > 0 ? (
 
-            results.map((item, index) => (
+            results.map((item, idx) => (
 
-              <tr key={index}>
+              <tr key={idx}>
 
                 <td>{item.row}</td>
                 <td>{item.type}</td>
@@ -917,12 +842,7 @@ ${endTime}
 
             <tr>
 
-              <td
-                colSpan="5"
-                style={{
-                  textAlign: 'center',
-                }}
-              >
+              <td colSpan="5">
                 No rounding mismatches found
               </td>
 
@@ -934,48 +854,35 @@ ${endTime}
 
       </table>
 
-      {/* REPITITION CHECKER */}
+      {/* DUPLICATE CHECKER */}
 
       <h2
         style={{
-          marginBottom: '15px',
-          color: 'white',
           textAlign: 'center',
-          lineHeight: '1.6',
+          marginBottom: '10px',
         }}
       >
         Repitition Checker
-
-        <br />
-
-        <span
-          style={{
-            fontSize: '18px',
-            fontWeight: 'normal',
-            display: 'block',
-            marginTop: '8px',
-          }}
-        >
-          (Only entries with same
-          End Date,
-          Flight Number,
-          REGN,
-          Bay Number,
-          Start Time
-          and End Time
-          will be highlighted)
-        </span>
-
       </h2>
+
+      <p
+        style={{
+          textAlign: 'center',
+          marginBottom: '20px',
+        }}
+      >
+        (End Date, Flight Number,
+        REGN, Bay Number,
+        Start Time, End Time)
+      </p>
 
       <table
         border="1"
         cellPadding="10"
         style={{
           width: '100%',
-          backgroundColor: '#111111',
-          borderCollapse: 'collapse',
           marginBottom: '50px',
+          borderCollapse: 'collapse',
           color: 'white',
         }}
       >
@@ -983,18 +890,15 @@ ${endTime}
         <thead
           style={{
             backgroundColor: '#dc2626',
-            color: 'white',
           }}
         >
 
           <tr>
-
             <th>Rows</th>
             <th>Type</th>
             <th>Flight</th>
             <th>REGN</th>
             <th>Bay</th>
-
           </tr>
 
         </thead>
@@ -1003,9 +907,9 @@ ${endTime}
 
           {duplicates.length > 0 ? (
 
-            duplicates.map((item, index) => (
+            duplicates.map((item, idx) => (
 
-              <tr key={index}>
+              <tr key={idx}>
 
                 <td>{item.rows}</td>
                 <td>{item.type}</td>
@@ -1021,12 +925,7 @@ ${endTime}
 
             <tr>
 
-              <td
-                colSpan="5"
-                style={{
-                  textAlign: 'center',
-                }}
-              >
+              <td colSpan="5">
                 No duplicate entries found
               </td>
 
@@ -1038,13 +937,12 @@ ${endTime}
 
       </table>
 
-      {/* CHARGES CHECKER */}
+      {/* CHARGE CHECKER */}
 
       <h2
         style={{
-          marginTop: '50px',
-          color: 'white',
           textAlign: 'center',
+          marginBottom: '20px',
         }}
       >
         Charges Checker
@@ -1055,27 +953,23 @@ ${endTime}
         cellPadding="10"
         style={{
           width: '100%',
-          backgroundColor: '#111111',
+          marginBottom: '50px',
           borderCollapse: 'collapse',
           color: 'white',
-          marginBottom: '50px',
         }}
       >
 
         <thead
           style={{
-            backgroundColor: '#16a34a',
-            color: 'white',
+            backgroundColor: '#059669',
           }}
         >
 
           <tr>
-
             <th>Row</th>
             <th>Type</th>
             <th>Excel Charge</th>
             <th>Calculated Charge</th>
-
           </tr>
 
         </thead>
@@ -1084,9 +978,9 @@ ${endTime}
 
           {chargeErrors.length > 0 ? (
 
-            chargeErrors.map((item, index) => (
+            chargeErrors.map((item, idx) => (
 
-              <tr key={index}>
+              <tr key={idx}>
 
                 <td>{item.row}</td>
                 <td>{item.type}</td>
@@ -1101,12 +995,7 @@ ${endTime}
 
             <tr>
 
-              <td
-                colSpan="4"
-                style={{
-                  textAlign: 'center',
-                }}
-              >
+              <td colSpan="4">
                 No charge mismatches found
               </td>
 
@@ -1118,13 +1007,12 @@ ${endTime}
 
       </table>
 
-      {/* ABNORMAL USAGE CHECKER */}
+      {/* ABNORMAL */}
 
       <h2
         style={{
-          marginTop: '50px',
-          color: 'white',
           textAlign: 'center',
+          marginBottom: '20px',
         }}
       >
         Abnormal Usage Checker
@@ -1135,26 +1023,22 @@ ${endTime}
         cellPadding="10"
         style={{
           width: '100%',
-          backgroundColor: '#111111',
+          marginBottom: '50px',
           borderCollapse: 'collapse',
           color: 'white',
-          marginBottom: '50px',
         }}
       >
 
         <thead
           style={{
             backgroundColor: '#9333ea',
-            color: 'white',
           }}
         >
 
           <tr>
-
             <th>Row</th>
             <th>Type</th>
             <th>Actual Usage</th>
-
           </tr>
 
         </thead>
@@ -1163,9 +1047,9 @@ ${endTime}
 
           {abnormalEntries.length > 0 ? (
 
-            abnormalEntries.map((item, index) => (
+            abnormalEntries.map((item, idx) => (
 
-              <tr key={index}>
+              <tr key={idx}>
 
                 <td>{item.row}</td>
                 <td>{item.type}</td>
@@ -1179,12 +1063,7 @@ ${endTime}
 
             <tr>
 
-              <td
-                colSpan="3"
-                style={{
-                  textAlign: 'center',
-                }}
-              >
+              <td colSpan="3">
                 No abnormal usage found
               </td>
 
@@ -1200,12 +1079,11 @@ ${endTime}
 
       <h2
         style={{
-          marginTop: '50px',
-          color: 'white',
           textAlign: 'center',
+          marginBottom: '20px',
         }}
       >
-        DEL Flight Checker(Flights with Origin or Destination "DEL" will be listed)
+        DEL Checker
       </h2>
 
       <table
@@ -1213,29 +1091,25 @@ ${endTime}
         cellPadding="10"
         style={{
           width: '100%',
-          backgroundColor: '#111111',
+          marginBottom: '50px',
           borderCollapse: 'collapse',
           color: 'white',
-          marginBottom: '50px',
         }}
       >
 
         <thead
           style={{
             backgroundColor: '#ea580c',
-            color: 'white',
           }}
         >
 
           <tr>
-
             <th>Row</th>
             <th>Type</th>
             <th>Origin</th>
             <th>Destination</th>
-            <th>Flight Number</th>
-            <th>Bay Number</th>
-
+            <th>Flight</th>
+            <th>Bay</th>
           </tr>
 
         </thead>
@@ -1244,9 +1118,9 @@ ${endTime}
 
           {delEntries.length > 0 ? (
 
-            delEntries.map((item, index) => (
+            delEntries.map((item, idx) => (
 
-              <tr key={index}>
+              <tr key={idx}>
 
                 <td>{item.row}</td>
                 <td>{item.type}</td>
@@ -1263,13 +1137,8 @@ ${endTime}
 
             <tr>
 
-              <td
-                colSpan="6"
-                style={{
-                  textAlign: 'center',
-                }}
-              >
-                No DEL flights found
+              <td colSpan="6">
+                No DEL entries found
               </td>
 
             </tr>
