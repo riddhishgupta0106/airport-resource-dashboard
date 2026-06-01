@@ -1,4 +1,5 @@
 {
+<<<<<<< HEAD
   "name": "bme-dashboard",
   "private": true,
   "homepage": "https://riddhishgupta0106.github.io/airport-resource-dashboard",
@@ -15,6 +16,29 @@
   "dependencies": {
     "react": "^19.2.6",
     "react-dom": "^19.2.6",
+=======
+  "name": "dash",
+  "private": true,
+  "homepage": "https://riddhishgupta0106.github.io/BME-Dashboard",
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+  "dev": "vite",
+  "build": "vite build",
+  "preview": "vite preview",
+  "predeploy": "npm run build",
+  "deploy": "gh-pages -d dist"
+},
+  "dependencies": {
+    "@emotion/react": "^11.14.0",
+    "@emotion/styled": "^11.14.1",
+    "@mui/icons-material": "^9.0.1",
+    "@mui/material": "^9.0.1",
+    "file-saver": "^2.0.5",
+    "react": "^19.2.6",
+    "react-dom": "^19.2.6",
+    "recharts": "^3.8.1",
+>>>>>>> 1c5178a57b78415d30fdcf72a660ac727ab9cad7
     "xlsx": "^0.18.5"
   },
   "devDependencies": {
