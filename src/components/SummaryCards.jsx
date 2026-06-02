@@ -84,32 +84,32 @@ function SummaryCards({ analytics }) {
 
     {
       title: "⚡ GPU Hours",
-      value: analytics.totalGPUHours?.toFixed(1)
+      value: analytics.totalGPUHours?.toFixed(2)
     },
     
     {
       title: "⚡ Domestic GPU Hours",
-      value: analytics.domesticGPUHours?.toFixed(1)
+      value: analytics.domesticGPUHours?.toFixed(2)
     },
     
     {
       title: "⚡ International GPU Hours",
-      value: analytics.internationalGPUHours?.toFixed(1)
+      value: analytics.internationalGPUHours?.toFixed(2)
     },
     
     {
       title: "❄️ PCA Hours",
-      value: analytics.totalPCAHours?.toFixed(1)
+      value: analytics.totalPCAHours?.toFixed(2)
     },
     
     {
       title: "❄️ Domestic PCA Hours",
-      value: analytics.domesticPCAHours?.toFixed(1)
+      value: analytics.domesticPCAHours?.toFixed(2)
     },
     
     {
       title: "❄️ International PCA Hours",
-      value: analytics.internationalPCAHours?.toFixed(1)
+      value: analytics.internationalPCAHours?.toFixed(2)
     },
     
     {

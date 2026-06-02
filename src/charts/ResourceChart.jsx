@@ -18,7 +18,15 @@ import {
   
       <div>
   
-        <h2>
+        <h2
+        style={{
+          textAlign: "center",
+          color: "#111827",
+          fontWeight: 700,
+          fontSize: "1.6rem",
+          marginBottom: "24px",
+          marginTop: "0"
+        }}>
         GPU Utilization By Airline
         </h2>
   
@@ -48,7 +56,11 @@ import {
   
             
   
-            <Tooltip />
+<Tooltip
+  formatter={(value) =>
+    Number(value).toFixed(2)
+  }
+/>
   
             <Legend />
   

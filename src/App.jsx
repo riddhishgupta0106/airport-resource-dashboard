@@ -1,3 +1,7 @@
+import AverageUsageKPIs
+from "./components/AverageUsageKPIs";
+import AirlineUtilizationGrid
+from "./components/AirlineUtilizationGrid";
 import DateGPUChart
 from "./charts/DateGPUChart";
 
@@ -6,7 +10,7 @@ from "./charts/DatePCAChart";
 
 import DateResourceTable
 from "./components/DateResourceTable";
-import { Paper } from "@mui/material";
+import { Paper, Grid } from "@mui/material";
 import LonghaulTurnaroundChart
 from "./charts/LonghaulTurnaroundChart";
 import AircraftGPUChart from "./charts/AircraftGPUChart";
@@ -127,7 +131,7 @@ function App() {
 <h1
   style={{
     fontSize: "3rem",
-    marginBottom: "10px",
+    marginBottom: "20px",
     color: "#0f172a"
   }}
 >
@@ -139,7 +143,7 @@ function App() {
     color: "#64748b",
     fontSize: "1.1rem"
   }}
->
+  >
   Flight Operations • GPU • PCA • Stand Utilization • Aircraft Analysis
 </p>
 
@@ -180,11 +184,28 @@ function App() {
             analytics
           }
         />
+        <AverageUsageKPIs
+  rows={filteredRows}
+/>
+        <Paper
+  elevation={3}
+  sx={{
+    p: 4,
+    mb: 5,
+    borderRadius: 4
+  }}
+>
+  <AirlineUtilizationGrid
+    airlineData={
+      analytics?.airlineData
+    }
+  />
+</Paper>
         
 
         <Paper
   elevation={3}
-  sx={{ p: 3, mb: 4, borderRadius: 3 }}
+  sx={{ p: 4, mb: 5, borderRadius: 4 }}
 >
   <AirlineChart
     airlineData={
@@ -195,7 +216,7 @@ function App() {
 
 <Paper
   elevation={3}
-  sx={{ p: 3, mb: 4, borderRadius: 3 }}
+  sx={{ p: 4, mb: 5, borderRadius: 4 }}
 >
   <LonghaulTurnaroundChart
     analytics={analytics}
@@ -204,7 +225,7 @@ function App() {
 
 <Paper
   elevation={3}
-  sx={{ p: 3, mb: 4, borderRadius: 3 }}
+  sx={{ p: 4, mb: 5, borderRadius: 4 }}
 >
   <ResourceChart
     airlineData={
@@ -215,7 +236,7 @@ function App() {
 
 <Paper
   elevation={3}
-  sx={{ p: 3, mb: 4, borderRadius: 3 }}
+  sx={{ p: 4, mb: 5, borderRadius: 4 }}
 >
   <PCAChart
     airlineData={
@@ -226,7 +247,7 @@ function App() {
 
 <Paper
   elevation={3}
-  sx={{ p: 3, mb: 4, borderRadius: 3 }}
+  sx={{ p: 4, mb: 5, borderRadius: 4 }}
 >
   <GPUStandChart
     standData={
@@ -237,7 +258,7 @@ function App() {
 
 <Paper
   elevation={3}
-  sx={{ p: 3, mb: 4, borderRadius: 3 }}
+  sx={{ p: 4, mb: 5, borderRadius: 4 }}
 >
   <PCAStandChart
     standData={
@@ -246,31 +267,56 @@ function App() {
   />
 </Paper>
 
-<Paper
-  elevation={3}
-  sx={{ p: 3, mb: 4, borderRadius: 3 }}
+<Grid
+  container
+  spacing={3}
+  sx={{
+    mb: 5,
+    width: "100%"
+  }}
 >
-  <AircraftGPUChart
-    aircraftResourceData={
-      analytics?.aircraftResourceData
-    }
-  />
-</Paper>
 
-<Paper
-  elevation={3}
-  sx={{ p: 3, mb: 4, borderRadius: 3 }}
->
-  <AircraftPCAChart
-    aircraftResourceData={
-      analytics?.aircraftResourceData
-    }
-  />
-</Paper>
+  <Grid size={{ xs: 12, md: 6 }}>
+    <Paper
+      elevation={3}
+      sx={{
+        p: 3,
+        borderRadius: 4,
+        height: 520,
+        width: "100%"
+      }}
+    >
+      <AircraftGPUChart
+        aircraftResourceData={
+          analytics?.aircraftResourceData
+        }
+      />
+    </Paper>
+  </Grid>
+
+  <Grid size={{ xs: 12, md: 6 }}>
+    <Paper
+      elevation={3}
+      sx={{
+        p: 3,
+        borderRadius: 4,
+        height: 520,
+        width: "100%"
+      }}
+    >
+      <AircraftPCAChart
+        aircraftResourceData={
+          analytics?.aircraftResourceData
+        }
+      />
+    </Paper>
+  </Grid>
+
+</Grid>
 
   <Paper
     elevation={3}
-    sx={{ p: 3, mb: 4, borderRadius: 3 }}
+    sx={{ p: 4, mb: 5, borderRadius: 4 }}
   >
 <AircraftResourceTable
   aircraftResourceData={
@@ -282,7 +328,7 @@ function App() {
       
 <Paper
   elevation={3}
-  sx={{ p: 3, mb: 4, borderRadius: 3 }}
+  sx={{ p: 4, mb: 5, borderRadius: 4 }}
 >
         <AirlineAnalysis
           airlineData={
@@ -292,11 +338,7 @@ function App() {
 </Paper>
 <Paper
   elevation={3}
-  sx={{
-    p: 3,
-    mb: 4,
-    borderRadius: 3
-  }}
+  sx={{ p: 4, mb: 5, borderRadius: 4 }}
 >
   <StandChart
     standData={analytics?.standData}
@@ -305,11 +347,7 @@ function App() {
 
 <Paper
   elevation={3}
-  sx={{
-    p: 3,
-    mb: 4,
-    borderRadius: 3
-  }}
+  sx={{ p: 4, mb: 5, borderRadius: 4 }}
 >
   <StandAnalysis
     standData={analytics?.standData}
@@ -318,11 +356,7 @@ function App() {
 
 <Paper
   elevation={3}
-  sx={{
-    p: 3,
-    mb: 4,
-    borderRadius: 3
-  }}
+  sx={{ p: 4, mb: 5, borderRadius: 4 }}
 >
   <DateChart
     dateData={analytics?.dateData}
@@ -331,11 +365,7 @@ function App() {
 
 <Paper
   elevation={3}
-  sx={{
-    p: 3,
-    mb: 4,
-    borderRadius: 3
-  }}
+  sx={{ p: 4, mb: 5, borderRadius: 4 }}
 >
   <DateAnalysis
     dateData={analytics?.dateData}
@@ -343,11 +373,7 @@ function App() {
 </Paper>
 <Paper
   elevation={3}
-  sx={{
-    p: 3,
-    mb: 4,
-    borderRadius: 3
-  }}
+  sx={{ p: 4, mb: 5, borderRadius: 4 }}
 >
 <DateGPUChart
   dateData={analytics?.dateData}
@@ -355,11 +381,7 @@ function App() {
 </Paper>
 <Paper
   elevation={3}
-  sx={{
-    p: 3,
-    mb: 4,
-    borderRadius: 3
-  }}
+  sx={{ p: 4, mb: 5, borderRadius: 4 }}
 >
 <DatePCAChart
   dateData={analytics?.dateData}
@@ -367,11 +389,7 @@ function App() {
 </Paper>
 <Paper
   elevation={3}
-  sx={{
-    p: 3,
-    mb: 4,
-    borderRadius: 3
-  }}
+  sx={{ p: 4, mb: 5, borderRadius: 4 }}
 >
 <DateResourceTable
   dateData={analytics?.dateData}

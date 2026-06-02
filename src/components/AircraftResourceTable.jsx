@@ -1,101 +1,125 @@
 function AircraftResourceTable({
-    aircraftResourceData
-  }) {
-  
-    if (!aircraftResourceData)
-      return null;
-  
-    return (
-  
-      <div>
-  
-        <h2>
-          Aircraft Resource Analysis
-        </h2>
-  
+  aircraftResourceData,
+}) {
+  if (!aircraftResourceData)
+    return null;
+
+  return (
+    <div>
+      <h2
+        style={{
+          textAlign: "center",
+          color: "#111827",
+          fontWeight: 700,
+          fontSize: "1.6rem",
+          marginBottom: "24px",
+          marginTop: "0",
+        }}
+      >
+        Aircraft Resource Analysis
+      </h2>
+
+      <div
+        style={{
+          overflowX: "auto",
+        }}
+      >
         <table
-          border="1"
-          cellPadding="8"
+          style={{
+            width: "100%",
+            borderCollapse: "collapse",
+            textAlign: "center",
+          }}
         >
-  
           <thead>
-  
-            <tr>
-  
-              <th>
+            <tr
+              style={{
+                backgroundColor: "#f8fafc",
+              }}
+            >
+              <th style={headerStyle}>
                 Aircraft Type
               </th>
-  
-              <th>
+
+              <th style={headerStyle}>
                 Flights
               </th>
-  
-              <th>
+
+              <th style={headerStyle}>
                 Domestic GPU
               </th>
-  
-              <th>
+
+              <th style={headerStyle}>
                 International GPU
               </th>
-  
-              <th>
+
+              <th style={headerStyle}>
                 Domestic PCA
               </th>
-  
-              <th>
+
+              <th style={headerStyle}>
                 International PCA
               </th>
-  
             </tr>
-  
           </thead>
-  
+
           <tbody>
-  
             {aircraftResourceData.map(
               (item) => (
-  
                 <tr
                   key={item.type}
                 >
-  
-                  <td>
+                  <td style={cellStyle}>
                     {item.type}
                   </td>
-  
-                  <td>
+
+                  <td style={cellStyle}>
                     {item.flights}
                   </td>
-  
-                  <td>
-                    {item.domesticGPUHours.toFixed(1)}
+
+                  <td style={cellStyle}>
+                    {item.domesticGPUHours.toFixed(
+                      2
+                    )}
                   </td>
-  
-                  <td>
-                    {item.internationalGPUHours.toFixed(1)}
+
+                  <td style={cellStyle}>
+                    {item.internationalGPUHours.toFixed(
+                      2
+                    )}
                   </td>
-  
-                  <td>
-                    {item.domesticPCAHours.toFixed(1)}
+
+                  <td style={cellStyle}>
+                    {item.domesticPCAHours.toFixed(
+                      2
+                    )}
                   </td>
-  
-                  <td>
-                    {item.internationalPCAHours.toFixed(1)}
+
+                  <td style={cellStyle}>
+                    {item.internationalPCAHours.toFixed(
+                      2
+                    )}
                   </td>
-  
                 </tr>
-  
               )
             )}
-  
           </tbody>
-  
         </table>
-  
       </div>
-  
-    );
-  
-  }
-  
-  export default AircraftResourceTable;
+    </div>
+  );
+}
+
+const headerStyle = {
+  padding: "12px",
+  border: "1px solid #e5e7eb",
+  fontWeight: 700,
+  color: "#111827",
+};
+
+const cellStyle = {
+  padding: "10px",
+  border: "1px solid #e5e7eb",
+};
+
+export default AircraftResourceTable;

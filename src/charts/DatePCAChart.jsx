@@ -27,7 +27,15 @@ function DatePCAChart({ dateData }) {
       }}
     >
 
-      <h2>
+      <h2
+      style={{
+        textAlign: "center",
+        color: "#111827",
+        fontWeight: 700,
+        fontSize: "1.6rem",
+        marginBottom: "24px",
+        marginTop: "0"
+      }}>
         Date Wise PCA Usage
       </h2>
 
@@ -44,7 +52,11 @@ function DatePCAChart({ dateData }) {
 
           <YAxis />
 
-          <Tooltip />
+          <Tooltip
+  formatter={(value) =>
+    Number(value).toFixed(2)
+  }
+/>
 
           <Legend />
 

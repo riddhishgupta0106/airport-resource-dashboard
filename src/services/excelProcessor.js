@@ -266,6 +266,9 @@ internationalNarrowBodyFlights: 0,
       
         gpuHours: 0,
         pcaHours: 0,
+
+        gpuFlights: 0,
+pcaFlights: 0,
       
         domesticGPUHours: 0,
         internationalGPUHours: 0,
@@ -292,6 +295,13 @@ internationalNarrowBodyFlights: 0,
 
     analytics.airlineData[airline].gpuHours += gpuHours;
     analytics.airlineData[airline].pcaHours += pcaHours;
+    if (gpuHours > 0) {
+      analytics.airlineData[airline].gpuFlights++;
+    }
+    
+    if (pcaHours > 0) {
+      analytics.airlineData[airline].pcaFlights++;
+    }
     if (flightType === "DOMESTIC") {
 
       analytics.airlineData[airline].domesticGPUHours += gpuHours;

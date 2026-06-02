@@ -15,7 +15,14 @@ import {
         <Toolbar>
   
           <Typography
-            variant="h5"
+          style={{
+            textAlign: "center",
+            color: "#111827",
+            fontWeight: 700,
+            fontSize: "1.6rem",
+            marginBottom: "24px",
+            marginTop: "0"
+          }}
           >
             Airport Analytics Dashboard
           </Typography>

@@ -1,87 +1,104 @@
 function StandAnalysis({ standData }) {
-
   if (!standData)
     return null;
 
   return (
-
     <div>
-
-      <h2>
+      <h2
+        style={{
+          textAlign: "center",
+          color: "#111827",
+          fontWeight: 700,
+          fontSize: "1.6rem",
+          marginBottom: "24px",
+          marginTop: "0",
+        }}
+      >
         Stand Wise Analysis
       </h2>
 
-      <table
-        border="1"
-        cellPadding="8"
+      <div
+        style={{
+          overflowX: "auto",
+        }}
       >
-
-        <thead>
-
-          <tr>
-            <th>Stand</th>
-            <th>Flights</th>
-            <th>GPU Hours</th>
-            <th>PCA Hours</th>
-            <th>Domestic</th>
-            <th>International</th>
-            <th>Longhaul</th>
-            <th>Turnaround</th>
-          </tr>
-
-        </thead>
-
-        <tbody>
-
-          {standData.map((stand) => (
-
+        <table
+          style={{
+            width: "100%",
+            borderCollapse: "collapse",
+            textAlign: "center",
+          }}
+        >
+          <thead>
             <tr
-              key={stand.stand}
+              style={{
+                backgroundColor: "#f8fafc",
+              }}
             >
-
-              <td>
-                {stand.stand}
-              </td>
-
-              <td>
-                {stand.flights}
-              </td>
-
-              <td>
-                {(stand.gpuHours || 0).toFixed(1)}
-              </td>
-
-              <td>
-                {(stand.pcaHours || 0).toFixed(1)}
-              </td>
-
-              <td>
-                {stand.domestic}
-              </td>
-
-              <td>
-                {stand.international}
-              </td>
-
-              <td>
-                {stand.longhaul}
-              </td>
-
-              <td>
-                {stand.turnaround}
-              </td>
-
+              <th style={headerStyle}>Stand</th>
+              <th style={headerStyle}>Flights</th>
+              <th style={headerStyle}>GPU Hours</th>
+              <th style={headerStyle}>PCA Hours</th>
+              <th style={headerStyle}>Domestic</th>
+              <th style={headerStyle}>International</th>
+              <th style={headerStyle}>Longhaul</th>
+              <th style={headerStyle}>Turnaround</th>
             </tr>
+          </thead>
 
-          ))}
+          <tbody>
+            {standData.map((stand) => (
+              <tr key={stand.stand}>
+                <td style={cellStyle}>
+                  {stand.stand}
+                </td>
 
-        </tbody>
+                <td style={cellStyle}>
+                  {stand.flights}
+                </td>
 
-      </table>
+                <td style={cellStyle}>
+                  {(stand.gpuHours || 0).toFixed(2)}
+                </td>
 
+                <td style={cellStyle}>
+                  {(stand.pcaHours || 0).toFixed(2)}
+                </td>
+
+                <td style={cellStyle}>
+                  {stand.domestic}
+                </td>
+
+                <td style={cellStyle}>
+                  {stand.international}
+                </td>
+
+                <td style={cellStyle}>
+                  {stand.longhaul}
+                </td>
+
+                <td style={cellStyle}>
+                  {stand.turnaround}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
     </div>
-
   );
 }
+
+const headerStyle = {
+  padding: "12px",
+  border: "1px solid #e5e7eb",
+  fontWeight: 700,
+  color: "#111827",
+};
+
+const cellStyle = {
+  padding: "10px",
+  border: "1px solid #e5e7eb",
+};
 
 export default StandAnalysis;
