@@ -71,7 +71,7 @@ internationalNarrowBodyFlights: 0,
       row["AIR LINES"];
 
     const stand =
-      row["STAND "] ||
+      row["STAND"] ||
       row["STAND/PCA"];
 
     const flightType =
