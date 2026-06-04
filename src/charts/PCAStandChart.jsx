@@ -1,3 +1,5 @@
+import html2canvas from "html2canvas";
+
 import {
   BarChart,
   Bar,
@@ -10,42 +12,131 @@ import {
 } from "recharts";
 
 function PCAStandChart({ standData }) {
+
   if (!standData)
     return null;
 
-  const sortedData = [...standData].sort((a, b) => {
-    const standA = String(a.stand);
-    const standB = String(b.stand);
-  
-    const aNum = parseInt(standA.match(/\d+/)?.[0] || 0);
-    const bNum = parseInt(standB.match(/\d+/)?.[0] || 0);
-  
-    if (aNum !== bNum) {
-      return aNum - bNum;
+  const sortedData = [...standData].sort(
+    (a, b) => {
+
+      const standA =
+        String(a.stand);
+
+      const standB =
+        String(b.stand);
+
+      const aNum =
+        parseInt(
+          standA.match(/\d+/)?.[0]
+          || 0
+        );
+
+      const bNum =
+        parseInt(
+          standB.match(/\d+/)?.[0]
+          || 0
+        );
+
+      if (aNum !== bNum) {
+        return aNum - bNum;
+      }
+
+      return standA.localeCompare(
+        standB
+      );
+
     }
-  
-    return standA.localeCompare(standB);
-  });
+  );
+
+  const downloadChart = async () => {
+
+    const element =
+      document.getElementById(
+        "pca-stand-chart"
+      );
+
+    const canvas =
+      await html2canvas(
+        element
+      );
+
+    const link =
+      document.createElement("a");
+
+    link.download =
+      "PCA_Utilization_By_Stand.png";
+
+    link.href =
+      canvas.toDataURL(
+        "image/png"
+      );
+
+    link.click();
+  };
 
   return (
-    <div>
-      <h2
+
+    <div
+      id="pca-stand-chart"
+    >
+
+      <div
         style={{
-          textAlign: "center",
-          color: "#111827",
-          fontWeight: 700,
-          fontSize: "1.6rem",
-          marginBottom: "24px",
-          marginTop: "0"
+          display: "flex",
+          justifyContent:
+            "space-between",
+          alignItems:
+            "center",
+          marginBottom:
+            "20px"
         }}
       >
-        PCA Utilization By Stand
-      </h2>
+
+        <h2
+          style={{
+            color: "#111827",
+            fontWeight: 700,
+            fontSize: "1.6rem",
+            margin: 0
+          }}
+        >
+          PCA Utilization By Stand
+        </h2>
+
+        <button
+          onClick={
+            downloadChart
+          }
+          style={{
+            padding:
+              "8px 14px",
+            border:
+              "none",
+            borderRadius:
+              "8px",
+            background:
+              "#2563eb",
+            color:
+              "white",
+            cursor:
+              "pointer",
+            fontWeight:
+              600
+          }}
+        >
+          📥 PNG
+        </button>
+
+      </div>
 
       <ResponsiveContainer
         width="100%"
-        height={Math.max(800, sortedData.length * 35)}
+        height={Math.max(
+          800,
+          sortedData.length * 35
+        )}
       >
+
         <BarChart
           data={sortedData}
           layout="vertical"
@@ -56,7 +147,10 @@ function PCAStandChart({ standData }) {
             bottom: 20
           }}
         >
-          <CartesianGrid strokeDasharray="3 3" />
+
+          <CartesianGrid
+            strokeDasharray="3 3"
+          />
 
           <XAxis
             type="number"
@@ -66,7 +160,10 @@ function PCAStandChart({ standData }) {
             type="category"
             dataKey="stand"
             interval={0}
-            width={70}
+            width={80}
+            tick={{
+              fontSize: 12
+            }}
           />
 
           <Tooltip
@@ -88,10 +185,15 @@ function PCAStandChart({ standData }) {
             name="International PCA"
             fill="#ff9800"
           />
+
         </BarChart>
+
       </ResponsiveContainer>
+
     </div>
+
   );
+
 }
 
 export default PCAStandChart;

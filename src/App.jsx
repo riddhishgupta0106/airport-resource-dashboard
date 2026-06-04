@@ -1,3 +1,8 @@
+import html2canvas
+from "html2canvas";
+
+import jsPDF
+from "jspdf";
 import AverageUsageKPIs
 from "./components/AverageUsageKPIs";
 import AirlineUtilizationGrid
@@ -106,6 +111,55 @@ function App() {
       (item) =>
         item.airline
     ) || [];
+    const exportDashboardPDF = async () => {
+
+      const dashboard =
+        document.getElementById(
+          "dashboard-export"
+        );
+    
+      const canvas =
+        await html2canvas(
+          dashboard,
+          {
+            scale: 2
+          }
+        );
+    
+      const imgData =
+        canvas.toDataURL(
+          "image/png"
+        );
+    
+      const pdf =
+        new jsPDF(
+          "p",
+          "mm",
+          "a4"
+        );
+    
+      const pdfWidth =
+        pdf.internal.pageSize.getWidth();
+    
+      const pdfHeight =
+        (
+          canvas.height *
+          pdfWidth
+        ) / canvas.width;
+    
+      pdf.addImage(
+        imgData,
+        "PNG",
+        0,
+        0,
+        pdfWidth,
+        pdfHeight
+      );
+    
+      pdf.save(
+        "Airport_Dashboard.pdf"
+      );
+    };
   return (
 
     <>
@@ -119,8 +173,8 @@ function App() {
     minHeight: "100vh",
     padding: "24px"
   }}
->
-      <DashboardLayout>
+><DashboardLayout>
+<div id="dashboard-export">
       <div
   style={{
     marginBottom: "30px",
@@ -136,6 +190,20 @@ function App() {
   }}
 >
   ✈️ Airport Resource Analytics Dashboard
+  <button
+  onClick={exportDashboardPDF}
+  style={{
+    padding: "10px 20px",
+    border: "none",
+    borderRadius: "8px",
+    background: "#16a34a",
+    color: "white",
+    cursor: "pointer",
+    marginBottom: "20px"
+  }}
+>
+  📄 Export Dashboard PDF
+</button>
 </h1>
 
 <p
@@ -396,7 +464,8 @@ function App() {
 />
 </Paper>
 
-      </DashboardLayout>
+</div>
+</DashboardLayout>
 
       </div>
 

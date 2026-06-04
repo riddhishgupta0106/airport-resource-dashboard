@@ -1,3 +1,5 @@
+import html2canvas from "html2canvas";
+
 import {
   BarChart,
   Bar,
@@ -10,29 +12,88 @@ import {
 } from "recharts";
 
 function AircraftGPUChart({ aircraftResourceData }) {
-  if (!aircraftResourceData) return null;
+
+  if (!aircraftResourceData)
+    return null;
+
+  const downloadChart = async () => {
+
+    const element =
+      document.getElementById(
+        "aircraft-gpu-chart"
+      );
+
+    const canvas =
+      await html2canvas(
+        element
+      );
+
+    const link =
+      document.createElement("a");
+
+    link.download =
+      "Aircraft_GPU_Utilization.png";
+
+    link.href =
+      canvas.toDataURL(
+        "image/png"
+      );
+
+    link.click();
+  };
 
   return (
+
     <div
+      id="aircraft-gpu-chart"
       style={{
         width: "100%",
         height: "100%",
       }}
     >
-      <h2
+
+      <div
         style={{
-          textAlign: "center",
-          color: "#111827",
-          fontWeight: 700,
-          fontSize: "1.5rem",
-          marginBottom: "20px",
-          marginTop: 0,
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          marginBottom: "15px"
         }}
       >
-        GPU Utilization By Aircraft Type
-      </h2>
 
-      <ResponsiveContainer width="100%" height={420}>
+        <h2
+          style={{
+            color: "#111827",
+            fontWeight: 700,
+            fontSize: "1.5rem",
+            margin: 0,
+          }}
+        >
+          GPU Utilization By Aircraft Type
+        </h2>
+
+        <button
+          onClick={downloadChart}
+          style={{
+            padding: "8px 14px",
+            border: "none",
+            borderRadius: "8px",
+            background: "#2563eb",
+            color: "white",
+            cursor: "pointer",
+            fontWeight: 600
+          }}
+        >
+          📥 PNG
+        </button>
+
+      </div>
+
+      <ResponsiveContainer
+        width="100%"
+        height={420}
+      >
+
         <BarChart
           data={aircraftResourceData}
           margin={{
@@ -42,17 +103,22 @@ function AircraftGPUChart({ aircraftResourceData }) {
             bottom: 20,
           }}
         >
-          <CartesianGrid strokeDasharray="3 3" />
 
-          <XAxis dataKey="type" />
+          <CartesianGrid
+            strokeDasharray="3 3"
+          />
+
+          <XAxis
+            dataKey="type"
+          />
 
           <YAxis />
 
           <Tooltip
-  formatter={(value) =>
-    Number(value).toFixed(2)
-  }
-/>
+            formatter={(value) =>
+              Number(value).toFixed(2)
+            }
+          />
 
           <Legend
             verticalAlign="bottom"
@@ -72,10 +138,15 @@ function AircraftGPUChart({ aircraftResourceData }) {
             fill="#ff9800"
             radius={[6, 6, 0, 0]}
           />
+
         </BarChart>
+
       </ResponsiveContainer>
+
     </div>
+
   );
+
 }
 
 export default AircraftGPUChart;

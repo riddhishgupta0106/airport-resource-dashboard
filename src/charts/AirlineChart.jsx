@@ -1,3 +1,5 @@
+import html2canvas from "html2canvas";
+
 import {
   BarChart,
   Bar,
@@ -20,22 +22,86 @@ function AirlineChart({ airlineData }) {
       (a.domestic + a.international)
   );
 
+  const downloadChart = async () => {
+
+    const element =
+      document.getElementById(
+        "airline-chart"
+      );
+
+    const canvas =
+      await html2canvas(
+        element
+      );
+
+    const link =
+      document.createElement("a");
+
+    link.download =
+      "Flights_By_Airline.png";
+
+    link.href =
+      canvas.toDataURL(
+        "image/png"
+      );
+
+    link.click();
+  };
+
   return (
 
-    <div>
+    <div
+      id="airline-chart"
+    >
 
-      <h2
+      <div
         style={{
-          textAlign: "center",
-          color: "#111827",
-          fontWeight: 700,
-          fontSize: "1.6rem",
-          marginBottom: "24px",
-          marginTop: "0"
+          display: "flex",
+          justifyContent:
+            "space-between",
+          alignItems:
+            "center",
+          marginBottom:
+            "20px"
         }}
       >
-        Flights by Airline
-      </h2>
+
+        <h2
+          style={{
+            color: "#111827",
+            fontWeight: 700,
+            fontSize: "1.6rem",
+            margin: 0
+          }}
+        >
+          Flights by Airline
+        </h2>
+
+        <button
+          onClick={
+            downloadChart
+          }
+          style={{
+            padding:
+              "8px 14px",
+            border:
+              "none",
+            borderRadius:
+              "8px",
+            background:
+              "#2563eb",
+            color:
+              "white",
+            cursor:
+              "pointer",
+            fontWeight:
+              600
+          }}
+        >
+          📥 PNG
+        </button>
+
+      </div>
 
       <div
         style={{
@@ -48,7 +114,8 @@ function AirlineChart({ airlineData }) {
           width="100%"
           height={Math.max(
             600,
-            sortedData.length * 35
+            sortedData.length *
+              35
           )}
         >
 
@@ -63,7 +130,9 @@ function AirlineChart({ airlineData }) {
             }}
           >
 
-            <CartesianGrid strokeDasharray="3 3" />
+            <CartesianGrid
+              strokeDasharray="3 3"
+            />
 
             <XAxis
               type="number"
@@ -80,8 +149,12 @@ function AirlineChart({ airlineData }) {
             />
 
             <Tooltip
-              formatter={(value) =>
-                Number(value).toFixed(0)
+              formatter={(
+                value
+              ) =>
+                Number(
+                  value
+                ).toFixed(0)
               }
             />
 

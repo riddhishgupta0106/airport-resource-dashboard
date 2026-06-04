@@ -1,3 +1,5 @@
+import html2canvas from "html2canvas";
+
 import {
   BarChart,
   Bar,
@@ -26,22 +28,74 @@ function ResourceChart({ airlineData }) {
       )
   );
 
+  const downloadChart = async () => {
+
+    const element =
+      document.getElementById(
+        "gpu-airline-chart"
+      );
+
+    const canvas =
+      await html2canvas(
+        element
+      );
+
+    const link =
+      document.createElement("a");
+
+    link.download =
+      "GPU_Utilization_By_Airline.png";
+
+    link.href =
+      canvas.toDataURL(
+        "image/png"
+      );
+
+    link.click();
+  };
+
   return (
 
-    <div>
+    <div
+      id="gpu-airline-chart"
+    >
 
-      <h2
+      <div
         style={{
-          textAlign: "center",
-          color: "#111827",
-          fontWeight: 700,
-          fontSize: "1.6rem",
-          marginBottom: "24px",
-          marginTop: "0"
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          marginBottom: "20px"
         }}
       >
-        GPU Utilization By Airline
-      </h2>
+
+        <h2
+          style={{
+            color: "#111827",
+            fontWeight: 700,
+            fontSize: "1.6rem",
+            margin: 0
+          }}
+        >
+          GPU Utilization By Airline
+        </h2>
+
+        <button
+          onClick={downloadChart}
+          style={{
+            padding: "8px 14px",
+            border: "none",
+            borderRadius: "8px",
+            background: "#2563eb",
+            color: "white",
+            cursor: "pointer",
+            fontWeight: 600
+          }}
+        >
+          📥 PNG
+        </button>
+
+      </div>
 
       <ResponsiveContainer
         width="100%"
