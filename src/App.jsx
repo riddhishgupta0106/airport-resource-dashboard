@@ -165,18 +165,20 @@ function App() {
   }}
 ><DashboardLayout>
 <div id="dashboard-export">
-      <div
+<div
   style={{
-    marginBottom: "30px",
-    textAlign: "center"
+    marginBottom: "50px",
+    textAlign: "center",
+    paddingTop: "10px"
   }}
 >
 
 <h1
   style={{
     fontSize: "3rem",
-    marginBottom: "10px",
-    color: "#0f172a"
+    color: "#0f172a",
+    marginBottom: "25px",
+    fontWeight: 700
   }}
 >
   ✈️ Airport Resource Analytics Dashboard
@@ -190,33 +192,33 @@ function App() {
   }}
 >
 
-  <p
-    style={{
-      color: "#64748b",
-      fontSize: "1.1rem",
-      margin: 0
-    }}
-  >
-    Flight Operations • GPU • PCA • Stand Utilization • Aircraft Analysis
-  </p>
-
-  <button
+<p
+  style={{
+    color: "#64748b",
+    fontSize: "1.15rem",
+    marginBottom: "30px",
+    marginTop: 0
+  }}
+>
+  Flight Operations • GPU • PCA • Stand Utilization • Aircraft Analysis
+</p>
+<button
   onClick={downloadDashboardHTML}
-    style={{
-      padding: "12px 24px",
-      border: "none",
-      borderRadius: "10px",
-      background: "#2563eb",
-      color: "#fff",
-      cursor: "pointer",
-      fontSize: "15px",
-      fontWeight: "600",
-      boxShadow:
-        "0 4px 12px rgba(37,99,235,0.25)"
-    }}
-  >
-    📥 Download Dashboard
-  </button>
+  style={{
+    padding: "14px 32px",
+    border: "none",
+    borderRadius: "12px",
+    background: "#2563eb",
+    color: "#fff",
+    cursor: "pointer",
+    fontSize: "16px",
+    fontWeight: "600",
+    boxShadow:
+      "0 6px 18px rgba(37,99,235,0.25)"
+  }}
+>
+  🌐 Download Dashboard
+</button>
 
 </div>
 
