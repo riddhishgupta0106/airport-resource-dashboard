@@ -107,7 +107,7 @@ internationalNarrowBodyFlights: 0,
         1000
       );
 
-    const date =
+      const displayDate =
       jsDate.toLocaleDateString(
         "en-GB",
         {
@@ -115,6 +115,9 @@ internationalNarrowBodyFlights: 0,
           month: "short"
         }
       );
+    
+    const sortDate =
+      jsDate.getTime();
 
     // =========================
     // Overall Flight Metrics
@@ -320,10 +323,11 @@ pcaFlights: 0,
     // Date Analysis
     // =========================
 
-    if (!analytics.dateData[date]) {
+    if (!analytics.dateData[displayDate]) {
 
-      analytics.dateData[date] = {
-        date,
+      analytics.dateData[displayDate] = {
+        date: displayDate,
+        sortDate,
       
         flights: 0,
       
@@ -339,25 +343,25 @@ pcaFlights: 0,
 
     }
 
-    analytics.dateData[date].flights++;
+    analytics.dateData[displayDate].flights++;
 
     if (flightType === "DOMESTIC")
-      analytics.dateData[date].domestic++;
+      analytics.dateData[displayDate].domestic++;
 
     if (flightType === "INTERNATIONAL")
-      analytics.dateData[date].international++;
+      analytics.dateData[displayDate].international++;
 
     if (flightType === "DOMESTIC") {
 
-      analytics.dateData[date].domesticGPUHours += gpuHours;
-      analytics.dateData[date].domesticPCAHours += pcaHours;
+      analytics.dateData[displayDate].domesticGPUHours += gpuHours;
+      analytics.dateData[displayDate].domesticPCAHours += pcaHours;
     
     }
     
     if (flightType === "INTERNATIONAL") {
     
-      analytics.dateData[date].internationalGPUHours += gpuHours;
-      analytics.dateData[date].internationalPCAHours += pcaHours;
+      analytics.dateData[displayDate].internationalGPUHours += gpuHours;
+      analytics.dateData[displayDate].internationalPCAHours += pcaHours;
     
     }
 
@@ -445,9 +449,12 @@ if (stand) {
         b.flights - a.flights
     );
 
-  analytics.dateData =
+    analytics.dateData =
     Object.values(
       analytics.dateData
+    ).sort(
+      (a, b) =>
+        a.sortDate - b.sortDate
     );
     analytics.aircraftResourceData =
   Object.values(
