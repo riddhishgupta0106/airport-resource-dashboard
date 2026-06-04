@@ -1,8 +1,5 @@
 import html2canvas
 from "html2canvas";
-
-import jsPDF
-from "jspdf";
 import AverageUsageKPIs
 from "./components/AverageUsageKPIs";
 import AirlineUtilizationGrid
@@ -111,54 +108,47 @@ function App() {
       (item) =>
         item.airline
     ) || [];
-    const exportDashboardPDF = async () => {
+    const downloadDashboardHTML = () => {
 
       const dashboard =
         document.getElementById(
           "dashboard-export"
         );
     
-      const canvas =
-        await html2canvas(
-          dashboard,
+      const htmlContent = `
+    <!DOCTYPE html>
+    <html>
+    <head>
+    <meta charset="UTF-8">
+    <title>Airport Dashboard</title>
+    </head>
+    
+    <body>
+    ${dashboard.outerHTML}
+    </body>
+    
+    </html>
+    `;
+    
+      const blob =
+        new Blob(
+          [htmlContent],
           {
-            scale: 2
+            type: "text/html"
           }
         );
     
-      const imgData =
-        canvas.toDataURL(
-          "image/png"
-        );
+      const link =
+        document.createElement("a");
     
-      const pdf =
-        new jsPDF(
-          "p",
-          "mm",
-          "a4"
-        );
+      link.href =
+        URL.createObjectURL(blob);
     
-      const pdfWidth =
-        pdf.internal.pageSize.getWidth();
+      link.download =
+        "Airport_Dashboard.html";
     
-      const pdfHeight =
-        (
-          canvas.height *
-          pdfWidth
-        ) / canvas.width;
+      link.click();
     
-      pdf.addImage(
-        imgData,
-        "PNG",
-        0,
-        0,
-        pdfWidth,
-        pdfHeight
-      );
-    
-      pdf.save(
-        "Airport_Dashboard.pdf"
-      );
     };
   return (
 
@@ -185,35 +175,50 @@ function App() {
 <h1
   style={{
     fontSize: "3rem",
-    marginBottom: "20px",
+    marginBottom: "10px",
     color: "#0f172a"
   }}
 >
   ✈️ Airport Resource Analytics Dashboard
-  <button
-  onClick={exportDashboardPDF}
+</h1>
+<div
   style={{
-    padding: "10px 20px",
-    border: "none",
-    borderRadius: "8px",
-    background: "#16a34a",
-    color: "white",
-    cursor: "pointer",
-    marginBottom: "20px"
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+    gap: "15px"
   }}
 >
-  📄 Export Dashboard PDF
-</button>
-</h1>
 
-<p
-  style={{
-    color: "#64748b",
-    fontSize: "1.1rem"
-  }}
+  <p
+    style={{
+      color: "#64748b",
+      fontSize: "1.1rem",
+      margin: 0
+    }}
   >
-  Flight Operations • GPU • PCA • Stand Utilization • Aircraft Analysis
-</p>
+    Flight Operations • GPU • PCA • Stand Utilization • Aircraft Analysis
+  </p>
+
+  <button
+  onClick={downloadDashboardHTML}
+    style={{
+      padding: "12px 24px",
+      border: "none",
+      borderRadius: "10px",
+      background: "#2563eb",
+      color: "#fff",
+      cursor: "pointer",
+      fontSize: "15px",
+      fontWeight: "600",
+      boxShadow:
+        "0 4px 12px rgba(37,99,235,0.25)"
+    }}
+  >
+    📥 Download Dashboard
+  </button>
+
+</div>
 
 </div>
 
