@@ -121,6 +121,101 @@ function SummaryCards({ analytics }) {
       title: "🌬️ Total PCA Flights",
       value: analytics.pcaFlights
     }
+    ,
+{
+  title: "🛬 Total PBB Stand Flights",
+  value: analytics.totalPBBFlights
+},
+
+{
+  title: "🏠 Domestic PBB Stand Flights",
+  value: analytics.domesticPBBFlights
+},
+
+{
+  title: "🌍 International PBB Stand Flights",
+  value: analytics.internationalPBBFlights
+},
+
+{
+  title: "🚌 Remote Stand Flights",
+  value: analytics.remoteFlights
+}
+,
+{
+  title: "🛩️ Total Code A Flights",
+  value: analytics.totalCodeAFlights
+},
+
+{
+  title: "🏠 Code A Domestic PBB",
+  value: analytics.codeADomesticPBB
+},
+
+{
+  title: "🌍 Code A International PBB",
+  value: analytics.codeAInternationalPBB
+},
+
+{
+  title: "🚌 Code A Domestic Remote",
+  value: analytics.codeADomesticRemote
+},
+
+{
+  title: "🚌 Code A International Remote",
+  value: analytics.codeAInternationalRemote
+},
+
+{
+  title: "✈️ Total Code C Flights",
+  value: analytics.totalCodeCFlights
+},
+
+{
+  title: "🏠 Code C Domestic PBB",
+  value: analytics.codeCDomesticPBB
+},
+
+{
+  title: "🌍 Code C International PBB",
+  value: analytics.codeCInternationalPBB
+},
+
+{
+  title: "🚌 Code C Domestic Remote",
+  value: analytics.codeCDomesticRemote
+},
+
+{
+  title: "🚌 Code C International Remote",
+  value: analytics.codeCInternationalRemote
+}
+,
+{
+  title: "🛫 Total Code E Flights",
+  value: analytics.totalCodeEFlights
+},
+
+{
+  title: "🏠 Code E Domestic PBB",
+  value: analytics.codeEDomesticPBB
+},
+
+{
+  title: "🌍 Code E International PBB",
+  value: analytics.codeEInternationalPBB
+},
+
+{
+  title: "🚌 Code E Domestic Remote",
+  value: analytics.codeEDomesticRemote
+},
+
+{
+  title: "🚌 Code E International Remote",
+  value: analytics.codeEInternationalRemote
+}
 
   ];
 
@@ -166,13 +261,13 @@ variant="h4"
           .map((card) => (
 
             <Grid
-  item
-  xs={12}
-  sm={6}
-  md={4}
-  lg={3}
-              key={card.title}
-            >
+  size={{
+    xs: 12,
+    sm: 6,
+    md: 4,
+    lg: 3
+  }}
+>
 
 <Card
   sx={{
@@ -213,6 +308,106 @@ variant="h4"
           ))}
 
       </Grid>
+      <Typography
+  variant="h4"
+  sx={{
+    mb: 2,
+    color: "#7c3aed",
+    fontWeight: 800,
+    letterSpacing: "0.5px"
+  }}
+>
+  Stand KPIs
+</Typography>
+
+<Grid
+  container
+  spacing={2}
+  sx={{ mb: 4 }}
+>
+
+  {cards
+    .filter(card =>
+      [
+        "🛬 Total PBB Stand Flights",
+        "🏠 Domestic PBB Stand Flights",
+        "🌍 International PBB Stand Flights",
+        "🚌 Remote Stand Flights",
+      
+        "🛩️ Total Code A Flights",
+        "🏠 Code A Domestic PBB",
+        "🌍 Code A International PBB",
+        "🚌 Code A Domestic Remote",
+        "🚌 Code A International Remote",
+      
+        "✈️ Total Code C Flights",
+        "🏠 Code C Domestic PBB",
+        "🌍 Code C International PBB",
+        "🚌 Code C Domestic Remote",
+        "🚌 Code C International Remote",
+      "🛫 Total Code E Flights",
+      "🏠 Code E Domestic PBB",
+"🌍 Code E International PBB",
+"🚌 Code E Domestic Remote",
+"🚌 Code E International Remote"].includes(card.title)
+    )
+    .map((card) => (
+
+      <Grid
+        item
+        xs={12}
+        sm={6}
+        md={4}
+        lg={3}
+        key={card.title}
+      >
+
+        <Card
+          sx={{
+            backgroundColor: "#f3e8ff",
+            borderLeft: "6px solid #7c3aed",
+            borderRadius: 4,
+            boxShadow:
+              "0 8px 20px rgba(0,0,0,0.08)",
+
+            transition:
+              "all 0.3s ease",
+
+            "&:hover": {
+              transform:
+                "translateY(-6px)",
+
+              boxShadow:
+                "0 12px 28px rgba(0,0,0,0.15)"
+            }
+          }}
+        >
+
+          <CardContent>
+
+            <Typography
+              variant="subtitle1"
+              sx={{
+                fontWeight: 600,
+                color: "#475569"
+              }}
+            >
+              {card.title}
+            </Typography>
+
+            <Typography variant="h4">
+              {card.value}
+            </Typography>
+
+          </CardContent>
+
+        </Card>
+
+      </Grid>
+
+    ))}
+
+</Grid> 
 
       <Typography
 variant="h4"
@@ -247,13 +442,13 @@ variant="h4"
           .map((card) => (
 
             <Grid
-  item
-  xs={12}
-  sm={6}
-  md={4}
-  lg={3}
-              key={card.title}
-            >
+  size={{
+    xs: 12,
+    sm: 6,
+    md: 4,
+    lg: 3
+  }}
+>
 
 <Card
   sx={{
@@ -333,13 +528,13 @@ variant="h4"
           .map((card) => (
 
             <Grid
-  item
-  xs={12}
-  sm={6}
-  md={4}
-  lg={3}
-              key={card.title}
-            >
+  size={{
+    xs: 12,
+    sm: 6,
+    md: 4,
+    lg: 3
+  }}
+>
 
 <Card
   sx={{

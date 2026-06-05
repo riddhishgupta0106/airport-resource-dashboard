@@ -1,4 +1,8 @@
-export function processData(rows) {
+export function processData(
+  rows,
+  domesticPBBStands = [],
+  internationalPBBStands = []
+) {
 
   const analytics = {
     aircraftResourceData: {
@@ -58,13 +62,94 @@ internationalNarrowBodyFlights: 0,
 
     gpuFlights: 0,
     pcaFlights: 0,
+    
+    totalPBBFlights: 0,
+
+domesticPBBFlights: 0,
+
+internationalPBBFlights: 0,
+
+remoteFlights: 0,
+domesticPBBCodeAFlights: 0,
+domesticPBBCodeCFlights: 0,
+
+internationalPBBCodeAFlights: 0,
+internationalPBBCodeCFlights: 0,
+
+remoteCodeAFlights: 0,
+remoteCodeCFlights: 0,
+
+totalCodeAFlights: 0,
+
+totalCodeCFlights: 0,
+totalCodeEFlights: 0,
+
+domesticPBBCodeEFlights: 0,
+
+internationalPBBCodeEFlights: 0,
+
+remoteCodeEFlights: 0,
+
+codeEDomesticPBB: 0,
+codeEInternationalPBB: 0,
+
+codeEDomesticRemote: 0,
+codeEInternationalRemote: 0,
+
+codeADomesticPBB: 0,
+codeAInternationalPBB: 0,
+
+codeADomesticRemote: 0,
+codeAInternationalRemote: 0,
+
+codeCDomesticPBB: 0,
+codeCInternationalPBB: 0,
+
+codeCDomesticRemote: 0,
+codeCInternationalRemote: 0,
 
     airlineData: {},
     standData: {},
-    dateData: {}
+    dateData: {},
+
+minDate: null,
+maxDate: null,
+dateRange: ""
 
   };
+  const codeAAircraft = [
 
+    "AT7","ATR",
+  
+    "B20","B35","BE9",
+  
+    "BK2",
+  
+    "CCJ","CJ8",
+  
+    "CN5",
+  
+    "D20","DF3","DF7","DH4",
+  
+    "ER3",
+  
+    "F10",
+  
+    "G15","GJ6",
+  
+    "GRG","GRS",
+  
+    "H40",
+  
+    "L45",
+  
+    "PC2",
+  
+    "PL2",
+  
+    "PR1"
+  
+  ];
   rows.forEach((row) => {
 
     const airline =
@@ -74,14 +159,159 @@ internationalNarrowBodyFlights: 0,
       row["STAND"] ||
       row["STAND/PCA"];
 
+      const standNumber =
+  String(stand || "")
+    .match(/\d+/)?.[0];
+
+
+
     const flightType =
-      row["Domestic / International"];
+  row["Domestic / International"];
+
+const aircraftType =
+  row["Type"];
+
+const aircraftCode =
+  String(
+    row["Aircraft Type"] || ""
+  ).trim();
+
+  const isCodeE =
+  aircraftType ===
+  "WIDEBODY";
+
+const isCodeA =
+  !isCodeE &&
+  codeAAircraft.includes(
+    aircraftCode
+  );
+
+const isCodeC =
+  !isCodeE &&
+  !isCodeA;
+      const isDomesticPBB =
+  domesticPBBStands.includes(
+    standNumber
+  );
+
+const isInternationalPBB =
+  internationalPBBStands.includes(
+    standNumber
+  );
+
+const isDomestic =
+  flightType === "DOMESTIC";
+  if (isDomesticPBB) {
+
+    analytics.totalPBBFlights++;
+    analytics.domesticPBBFlights++;
+  
+    if (isCodeE) {
+
+      analytics.domesticPBBCodeEFlights++;
+      analytics.totalCodeEFlights++;
+      analytics.codeEDomesticPBB++;
+    
+    }
+    
+    else if (isCodeA) {
+    
+      analytics.domesticPBBCodeAFlights++;
+      analytics.totalCodeAFlights++;
+      analytics.codeADomesticPBB++;
+    
+    }
+    
+    else {
+    
+      analytics.domesticPBBCodeCFlights++;
+      analytics.totalCodeCFlights++;
+      analytics.codeCDomesticPBB++;
+    
+    }
+  
+  }
+  
+  else if (isInternationalPBB) {
+
+    analytics.totalPBBFlights++;
+    analytics.internationalPBBFlights++;
+  
+    if (isCodeE) {
+
+      analytics.internationalPBBCodeEFlights++;
+      analytics.totalCodeEFlights++;
+      analytics.codeEInternationalPBB++;
+    
+    }
+    
+    else if (isCodeA) {
+    
+      analytics.internationalPBBCodeAFlights++;
+      analytics.totalCodeAFlights++;
+      analytics.codeAInternationalPBB++;
+    
+    }
+    
+    else {
+    
+      analytics.internationalPBBCodeCFlights++;
+      analytics.totalCodeCFlights++;
+      analytics.codeCInternationalPBB++;
+    
+    }  
+  }
+  
+  else {
+
+    analytics.remoteFlights++;
+  
+    if (isCodeE) {
+
+      analytics.remoteCodeEFlights++;
+    
+      if (isDomestic)
+        analytics.codeEDomesticRemote++;
+      else
+        analytics.codeEInternationalRemote++;
+    
+      analytics.totalCodeEFlights++;
+    
+    }
+
+    
+    else if (isCodeA) {
+    
+      analytics.remoteCodeAFlights++;
+    
+      if (isDomestic)
+        analytics.codeADomesticRemote++;
+      else
+        analytics.codeAInternationalRemote++;
+    
+      analytics.totalCodeAFlights++;
+    
+    }
+    
+    else {
+    
+      analytics.remoteCodeCFlights++;
+    
+      if (isDomestic)
+        analytics.codeCDomesticRemote++;
+      else
+        analytics.codeCInternationalRemote++;
+    
+      analytics.totalCodeCFlights++;
+    
+    }
+  
+  }
 
     const category =
       row["Category"];
 
-    const aircraftType =
-      row["Type"];
+
 
     const gpuHours =
       (
@@ -106,6 +336,19 @@ internationalNarrowBodyFlights: 0,
         86400 *
         1000
       );
+      if (
+        !analytics.minDate ||
+        jsDate < analytics.minDate
+      ) {
+        analytics.minDate = jsDate;
+      }
+      
+      if (
+        !analytics.maxDate ||
+        jsDate > analytics.maxDate
+      ) {
+        analytics.maxDate = jsDate;
+      }
 
       const displayDate =
       jsDate.toLocaleDateString(
@@ -460,6 +703,39 @@ if (stand) {
   Object.values(
     analytics.aircraftResourceData
   );
+  console.log("Total PBB",
+    analytics.totalPBBFlights
+  );
+  
+  console.log("Domestic PBB",
+    analytics.domesticPBBFlights
+  );
+  
+  console.log("International PBB",
+    analytics.internationalPBBFlights
+  );
+  
+  console.log("Remote",
+    analytics.remoteFlights
+  );
+  if (
+    analytics.minDate &&
+    analytics.maxDate
+  ) {
+  
+    const formatDate =
+      (date) =>
+        date.toLocaleDateString(
+          "en-GB"
+        );
+  
+    analytics.dateRange =
+      `${formatDate(
+        analytics.minDate
+      )} to ${formatDate(
+        analytics.maxDate
+      )}`;
+  }
   return analytics;
 
 }

@@ -1,3 +1,5 @@
+import StandSummaryTable
+from "./components/StandSummaryTable";
 import html2canvas
 from "html2canvas";
 import AverageUsageKPIs
@@ -61,6 +63,46 @@ function App() {
       selectedAirline,
       setSelectedAirline
     ] = useState("ALL");
+    const [
+      selectedAirport,
+      setSelectedAirport
+    ] = useState("HYDERABAD");
+    const airportConfig = {
+
+      HYDERABAD: {
+
+        domesticPBB: [
+          "3","4","5","6","7","8","9",
+          "13","14",
+          "42","43","44","45","46","47",
+          "48","49","50","51","52","53","54"
+        ],
+      
+        internationalPBB: [
+          "55","56","57","58",
+          "59","60","61","62","63","64",
+          "66","67","68","69"
+        ]
+      
+      },
+    
+      DELHI: {
+    
+        domesticPBB: [],
+    
+        internationalPBB: []
+    
+      },
+    
+      GOA: {
+    
+        domesticPBB: [],
+    
+        internationalPBB: []
+    
+      }
+    
+    };
 
 
       useEffect(() => {
@@ -69,24 +111,38 @@ function App() {
           return;
       
         const result =
-          processData(
-            filteredRows
-          );
+processData(
+  filteredRows,
+  airportConfig[
+    selectedAirport
+  ].domesticPBB,
+  airportConfig[
+    selectedAirport
+  ].internationalPBB
+);
       
         setAnalytics(result);
       
       }, [
         selectedAirline,
+        selectedAirport,
         rows
       ]);
-
   const handleRowsLoaded =
     (data) => {
 
       setRows(data);
 
       const result =
-        processData(data);
+processData(
+  data,
+  airportConfig[
+    selectedAirport
+  ].domesticPBB,
+  airportConfig[
+    selectedAirport
+  ].internationalPBB
+);
 
       setAnalytics(result);
     };
@@ -242,7 +298,50 @@ function App() {
   <h3>
     Rows Loaded : {rows.length}
   </h3>
+  <div
+  style={{
+    marginBottom: "20px"
+  }}
+>
 
+  <label
+    style={{
+      fontWeight: 600,
+      marginRight: "10px"
+    }}
+  >
+    Airport:
+  </label>
+
+  <select
+    value={selectedAirport}
+    onChange={(e) =>
+      setSelectedAirport(
+        e.target.value
+      )
+    }
+    style={{
+      padding: "8px 12px",
+      borderRadius: "8px",
+      border: "1px solid #cbd5e1"
+    }}
+  >
+
+    <option value="HYDERABAD">
+      Hyderabad
+    </option>
+
+    <option value="DELHI">
+      Delhi
+    </option>
+
+    <option value="GOA">
+      Goa
+    </option>
+
+  </select>
+
+</div>
   <FilterPanel
     airlines={airlines}
     selectedAirline={
@@ -427,6 +526,18 @@ function App() {
   <StandAnalysis
     standData={analytics?.standData}
   />
+  <Paper
+  elevation={3}
+  sx={{
+    p: 4,
+    mb: 5,
+    borderRadius: 4
+  }}
+>
+  <StandSummaryTable
+    analytics={analytics}
+  />
+</Paper>
 </Paper>
 
 <Paper
